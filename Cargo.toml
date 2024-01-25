@@ -30,12 +30,14 @@ maintenance = { status = "passively-maintained" }
 default = ["pkg-config", "vcpkg"]
 ## Enable `libmagic` v5.40 API
 v5-40 = []
+bundled = ["cc", "v5-40"]
 
 [build-dependencies]
 ## Enable build using `pkg-config`
 pkg-config = { version = "0.3.27", optional = true }
 ## Enable build using `vcpkg`
 vcpkg = { version = "0.2.15", optional = true }
+cc = { version = "1.0.79", optional = true }
 
 [package.metadata.vcpkg]
 git = "https://github.com/microsoft/vcpkg"

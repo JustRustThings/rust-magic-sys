@@ -126,6 +126,11 @@ Especially linking statically to `libmagic` requires additional libraries that d
 You can skip the `magic-sys` build script entirely by [overriding it](https://doc.rust-lang.org/cargo/reference/build-scripts.html#overriding-build-scripts).\
 This is an option if you want to use neither `pkg-config` nor `vcpkg`.
 
+## vendor
+
+The `vendor` feature uses the [`cc` crate](https:/docs.rs/cc) to compile and
+static link a vendored version of libmagic, currently based on 5.45.
+
 # License
 
 Licensed under either of
