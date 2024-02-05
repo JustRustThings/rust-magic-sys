@@ -45,6 +45,7 @@ fn try_vcpkg() -> LibraryResult<vcpkg::Error, vcpkg::Library> {
 fn try_bundled() {
     let out_dir = std::env::var("OUT_DIR").unwrap();
     let out_dir = std::path::Path::new(&out_dir);
+    let target_vendor = std::env::var("CARGO_CFG_TARGET_VENDOR").unwrap();
     let include_dir = out_dir.join("include");
 
     // First, copy magic.h.in into out_dir/include/magic.h, replacing the X.YY
@@ -55,7 +56,9 @@ fn try_bundled() {
     std::fs::write(include_dir.join("magic.h"), &data).unwrap();
     std::fs::write(include_dir.join("forcestrlcpyweak.h"), "#pragma weak strlcpy").unwrap();
 
-    cc::Build::new()
+    let mut build = cc::Build::new();
+
+    build
         .include("file/src")
         .include(&include_dir)
         .flag(&format!("-include{}", include_dir.join("forcestrlcpyweak.h").display()))
@@ -82,9 +85,13 @@ fn try_bundled() {
         .file("file/src/cdf.c")
         .file("file/src/cdf_time.c")
         .file("file/src/readcdf.c")
-        .file("file/src/fmtcheck.c")
-        .file("file/src/strlcpy.c")
-        .compile("magic");
+        .file("file/src/fmtcheck.c");
+
+    if target_vendor != "apple" {
+        build.file("file/src/strlcpy.c");
+    }
+
+    build.compile("magic");
 }
 
 fn main() -> ExitCode {
