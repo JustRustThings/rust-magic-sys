@@ -53,10 +53,12 @@ fn try_bundled() {
     let mut data = std::fs::read_to_string("file/src/magic.h.in").unwrap();
     data = data.replace("X.YY", "5.45");
     std::fs::write(include_dir.join("magic.h"), &data).unwrap();
+    std::fs::write(include_dir.join("forcestrlcpyweak.h"), "#pragma weak strlcpy").unwrap();
 
     cc::Build::new()
         .include("file/src")
-        .include(include_dir)
+        .include(&include_dir)
+        .flag(&format!("-include{}", include_dir.join("forcestrlcpyweak.h").display()))
         .define("HAVE_UNISTD_H", "1")
         .define("HAVE_INTTYPES_H", "1")
         .define("VERSION", "5.45")
